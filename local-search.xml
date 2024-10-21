@@ -8,20 +8,32 @@
     <link href="/2024/10/21/Implementation/"/>
     <url>/2024/10/21/Implementation/</url>
     
-    <content type="html"><![CDATA[]]></content>
+    <content type="html"><![CDATA[<h2 id="overview">Overview</h2>]]></content>
     
     
+    <categories>
+      
+      <category>PROJECT</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>PAPER</tag>
+      
+    </tags>
     
   </entry>
   
   
   
   <entry>
-    <title>project</title>
+    <title>Project</title>
     <link href="/2024/10/21/Course_project/"/>
     <url>/2024/10/21/Course_project/</url>
     
-    <content type="html"><![CDATA[<p>This post ..</p><h1 id="reseach-experience">Reseach Experience</h1><h3 id="data-selection">Data Selection</h3><p>See details in post <img src=""alt="Implementation of Data Filtering Papers" /></p><h3 id="nus-summer-workshop">NUS Summer Workshop</h3><h3 id="reinforcement-learning">Reinforcement Learning</h3><h3 id="d-panoramic-simulation-for-metaverse">3D Panoramic Simulationfor Metaverse</h3><h1 id="course-project">Course Project</h1><h3 id="improved-yolo-v8">Improved YOLO v8</h3><h3 id="sound-data-classification">Sound Data Classification</h3><h3 id="heuristic-search">Heuristic Search</h3><h3 id="integrated-design">Integrated Design</h3>]]></content>
+    <content type="html"><![CDATA[<p>This post is a general description of my resume, especially myproject experience.</p><h1 id="education">Education</h1><img src="/2024/10/21/Course_project/1.png" class=""><h1 id="research-experience">Research Experience</h1><h3 id="data-selection">Data Selection</h3><p>See details in post <ahref="/2024/10/21/Implementation">Implementation of Data FilteringPapers</a></p><h3 id="nus-summer-workshop">NUS Summer Workshop</h3><ul><li>Final grade shows here: <ahref="https://github.com/radicalyyyahaha/NUS-SOC/blob/main/Final%20grade.pdf">Feedback</a></li><li>Github repo: <ahref="https://github.com/radicalyyyahaha/NUS-SOC">2024 NUS</a></li></ul><h3 id="reinforcement-learning">Reinforcement Learning</h3><h3 id="d-panoramic-simulation-for-metaverse">3D Panoramic Simulationfor Metaverse</h3><h1 id="course-project">Course Project</h1><h3 id="improved-yolo-v8">Improved YOLO v8</h3><h3 id="sound-data-classification">Sound Data Classification</h3><h3 id="heuristic-search">Heuristic Search</h3><h3 id="integrated-design">Integrated Design</h3>]]></content>
     
     
     <categories>
