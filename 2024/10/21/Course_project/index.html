@@ -16,24 +16,24 @@
   <meta name="author" content="Zhili Yang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="This paper can be considered an improvement over self-supervised contrastive learning, offering a method that helps enhance the quality of features. Introduction to Self-Supervised Contrastive Learnin">
+    <meta name="description" content="This post .. Reseach Experience Data Selection See details in post  NUS Summer Workshop Reinforcement Learning 3D Panoramic Simulation for Metaverse Course Project Improved YOLO v8 Sound Data Classifi">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Supervised Contrastive Learning">
-<meta property="og:url" content="http://example.com/2024/06/20/Supervised/index.html">
+<meta property="og:title" content="project">
+<meta property="og:url" content="http://example.com/2024/10/21/Course_project/index.html">
 <meta property="og:site_name" content="Zhili Yang&#39;s Blog">
-<meta property="og:description" content="This paper can be considered an improvement over self-supervised contrastive learning, offering a method that helps enhance the quality of features. Introduction to Self-Supervised Contrastive Learnin">
+<meta property="og:description" content="This post .. Reseach Experience Data Selection See details in post  NUS Summer Workshop Reinforcement Learning 3D Panoramic Simulation for Metaverse Course Project Improved YOLO v8 Sound Data Classifi">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/img/SCL.png">
-<meta property="article:published_time" content="2024-06-20T09:43:52.000Z">
-<meta property="article:modified_time" content="2024-10-21T09:46:18.909Z">
+<meta property="og:image" content="http://example.com/img/project.jpg">
+<meta property="article:published_time" content="2024-10-21T03:37:07.000Z">
+<meta property="article:modified_time" content="2024-10-21T12:05:27.247Z">
 <meta property="article:author" content="Zhili Yang">
-<meta property="article:tag" content="SCL, SSCL">
+<meta property="article:tag" content="Research Experience, Course Project">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/img/SCL.png">
+<meta name="twitter:image" content="http://example.com/img/project.jpg">
   
   
   
-  <title>Supervised Contrastive Learning - Zhili Yang&#39;s Blog</title>
+  <title>project - Zhili Yang&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -226,13 +226,13 @@
   
 
 <div id="banner" class="banner" parallax=true
-     style="background: url('/img/SCL.png') no-repeat center center; background-size: cover;">
+     style="background: url('/img/project.jpg') no-repeat center center; background-size: cover;">
   <div class="full-bg-img">
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Supervised Contrastive Learning"></span>
+            <span id="subtitle" data-typed-text="project"></span>
           
         </div>
 
@@ -243,8 +243,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-06-20 17:43" pubdate>
-          June 20, 2024 pm
+        <time datetime="2024-10-21 11:37" pubdate>
+          October 21, 2024 am
         </time>
       </span>
     
@@ -255,7 +255,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          95 words
+          2 words
         
       </span>
     
@@ -311,58 +311,25 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Supervised Contrastive Learning</h1>
+            <h1 id="seo-header">project</h1>
             
             
               <div class="markdown-body">
                 
-                <p>This paper can be considered an improvement over self-supervised
-contrastive learning, offering a method that helps enhance the quality
-of features.</p>
-<h3
-id="introduction-to-self-supervised-contrastive-learning">Introduction
-to Self-Supervised Contrastive Learning</h3>
-<img src="/2024/06/20/Supervised/1.png" srcset="/img/loading.gif" lazyload class="">
-<p>Self-supervised learning involves pre-training a model using a large
-amount of unlabeled data to learn data representations. These learned
-representations are then used in various downstream tasks, where they
-are connected to different classifiers/regressors and trained using
-labeled data from the downstream tasks, making them suitable for those
-tasks.</p>
-<p>Essentially, this maps the data onto a high-dimensional hypersphere,
-where vectors with similar features have high cosine similarity and
-vectors with dissimilar features are far apart. Word embedding seems to
-utilize this concept.</p>
-<p>Different models define their losses slightly differently. Here are
-the two most classic models:</p>
-<h5 id="simclr">SimCLR</h5>
-<p><span class="math display">\[ L = -\log \frac{\exp(\text{sim}(h_i,
-h_j)/\tau)}{\sum_{k=1}^{2N} \mathbf{1}_{[k \ne i]} \exp(\text{sim}(h_i,
-h_k)/\tau)} \]</span></p>
-<h5 id="moco">MoCo</h5>
-<p>Momentum Contrast (MoCo) uses a dynamically updated queue to store
-negative samples. Its loss function is similar to SimCLR but employs a
-momentum encoder to generate contrastive representations. <span
-class="math display">\[ L = -\log \frac{\exp(\text{sim}(h_q,
-h_k^+)/\tau)}{\sum_{i=0}^{K} \exp(\text{sim}(h_q, h_{k_i})/\tau)}
-\]</span> Where: - $ h_q $ is the representation of the query sample. -
-$ h_k^+ $ is the representation of the positive sample. - $ h_{k_i} $ is
-the representation of the negative samples in the queue.</p>
-<p>While this method can learn good features, it has a shortcoming: it
-does not consider the correlation of features among different images
-belonging to the same class. <img src="/2024/06/20/Supervised/2.png" srcset="/img/loading.gif" lazyload class=""></p>
-<h3 id="supervised-contrastive-learning">Supervised Contrastive
-Learning</h3>
-<p>To make the features of similar images close to each other, class
-information is used to determine which images belong to the same class.
-Therefore, the method's name changes from "self-supervised" to
-"supervised". The basis for contrastive learning shifts from "whether
-they come from the same image" to "whether they belong to the same
-class". The loss function used in training becomes:</p>
-<img src="/2024/06/20/Supervised/3.png" srcset="/img/loading.gif" lazyload class="">
-<p>The authors designed two types of loss functions, one with the
-weighting sum outside the log and one with it inside. Experiments found
-that the first type works better.</p>
+                <p>This post ..</p>
+<h1 id="reseach-experience">Reseach Experience</h1>
+<h3 id="data-selection">Data Selection</h3>
+<p>See details in post <img src="" srcset="/img/loading.gif" lazyload
+alt="Implementation of Data Filtering Papers" /></p>
+<h3 id="nus-summer-workshop">NUS Summer Workshop</h3>
+<h3 id="reinforcement-learning">Reinforcement Learning</h3>
+<h3 id="d-panoramic-simulation-for-metaverse">3D Panoramic Simulation
+for Metaverse</h3>
+<h1 id="course-project">Course Project</h1>
+<h3 id="improved-yolo-v8">Improved YOLO v8</h3>
+<h3 id="sound-data-classification">Sound Data Classification</h3>
+<h3 id="heuristic-search">Heuristic Search</h3>
+<h3 id="integrated-design">Integrated Design</h3>
 
                 
               </div>
@@ -381,7 +348,7 @@ that the first type works better.</p>
     
       <span class="category-chain">
         
-  <a href="/categories/PAPER/" class="category-chain-item">PAPER</a>
+  <a href="/categories/PROJECT/" class="category-chain-item">PROJECT</a>
   
   
 
@@ -396,7 +363,7 @@ that the first type works better.</p>
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/SCL-SSCL/" class="print-no-link">#SCL, SSCL</a>
+        <a href="/tags/Research-Experience-Course-Project/" class="print-no-link">#Research Experience, Course Project</a>
       
     </div>
   
@@ -408,8 +375,8 @@ that the first type works better.</p>
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Supervised Contrastive Learning</div>
-      <div>http://example.com/2024/06/20/Supervised/</div>
+      <div>project</div>
+      <div>http://example.com/2024/10/21/Course_project/</div>
     </div>
     <div class="license-meta">
       
@@ -421,7 +388,7 @@ that the first type works better.</p>
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>June 20, 2024</div>
+          <div>October 21, 2024</div>
         </div>
       
       
@@ -453,9 +420,9 @@ that the first type works better.</p>
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/10/21/Course_project/" title="project">
+                      <a href="/2024/10/21/Implementation/" title="Implementation">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">project</span>
+                        <span class="hidden-mobile">Implementation</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
@@ -463,8 +430,8 @@ that the first type works better.</p>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/06/20/Divergence/" title="Kullback-Leibler Divergence">
-                        <span class="hidden-mobile">Kullback-Leibler Divergence</span>
+                      <a href="/2024/06/20/Supervised/" title="Supervised Contrastive Learning">
+                        <span class="hidden-mobile">Supervised Contrastive Learning</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
