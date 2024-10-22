@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/img/impl.png">
 <meta property="article:published_time" content="2024-10-21T12:03:13.000Z">
-<meta property="article:modified_time" content="2024-10-22T03:45:35.289Z">
+<meta property="article:modified_time" content="2024-10-22T08:21:58.803Z">
 <meta property="article:author" content="Zhili Yang">
 <meta property="article:tag" content="PAPER">
 <meta name="twitter:card" content="summary_large_image">
@@ -451,6 +451,9 @@ results of the paper</p>
 <h5 id="spearman">Spearman</h5>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> json<br><span class="hljs-keyword">from</span> scipy.stats <span class="hljs-keyword">import</span> spearmanr<br><br><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;data/alpaca_data_gpt-neo_data_full.json&#x27;</span>, <span class="hljs-string">&#x27;r&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>    data1 = json.load(f)<br><br><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;data/alpaca_data_gpt2-xl_data_full.json&#x27;</span>, <span class="hljs-string">&#x27;r&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>    data2 = json.load(f)<br><br>ids1 = [item[<span class="hljs-string">&#x27;output&#x27;</span>] <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> data1]<br>ids2 = [item[<span class="hljs-string">&#x27;output&#x27;</span>] <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> data2]<br><br>common_ids = <span class="hljs-built_in">set</span>(ids1) &amp; <span class="hljs-built_in">set</span>(ids2)<br><br>ranks1 = [ids1.index(id_) + <span class="hljs-number">1</span> <span class="hljs-keyword">for</span> id_ <span class="hljs-keyword">in</span> common_ids]  <br>ranks2 = [ids2.index(id_) + <span class="hljs-number">1</span> <span class="hljs-keyword">for</span> id_ <span class="hljs-keyword">in</span> common_ids]<br><br>spearman_corr, p_value = spearmanr(ranks1, ranks2)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Spearman Rank Correlation: <span class="hljs-subst">&#123;spearman_corr&#125;</span>&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;P-value: <span class="hljs-subst">&#123;p_value&#125;</span>&quot;</span>)<br></code></pre></td></tr></table></figure>
 <p>neo:1 gpt2: 0.823 gpt2-large: 0.872 gpt-xl: 0.870</p>
+<h3
+id="less-selecting-influential-data-for-targeted-instruction-tuning">LESS:
+Selecting Influential Data for Targeted Instruction Tuning</h3>
 
                 
               </div>
