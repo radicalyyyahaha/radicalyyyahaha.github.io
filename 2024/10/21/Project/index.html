@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/img/project.jpg">
 <meta property="article:published_time" content="2024-10-21T03:37:07.000Z">
-<meta property="article:modified_time" content="2024-10-22T10:10:57.039Z">
+<meta property="article:modified_time" content="2024-10-22T12:27:14.406Z">
 <meta property="article:author" content="Zhili Yang">
 <meta property="article:tag" content="Research Experience, Course Project">
 <meta name="twitter:card" content="summary_large_image">
@@ -255,7 +255,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          143 words
+          210 words
         
       </span>
     
@@ -386,7 +386,7 @@ as well. Key issues to be addressed: The algorithm design of binocular
 fisheye lens wide-angle video efficient synthesis panoramic video, using
 two 180 degree fisheye lens synthesis 360 degree panorama, effectively
 reduce the amount of visual perception data. A user-friendly
-presentation based on VR devices; 3. Adopt deep learning to achieve
+presentation based on VR devices; Adopt deep learning to achieve
 accurate and efficient matching technology between panoramic video data
 and three-dimensional space point cloud.</p>
 <h1 id="course-project">Course Project</h1>
@@ -440,24 +440,73 @@ time (we only trained 25h on a 32G v100).</p>
 <p>You can find all projects in Github: <a
 target="_blank" rel="noopener" href="https://github.com/radicalyyyahaha/Berkeley-CS188">CS-188</a></p>
 <h1 id="some-other-explorations">Some other explorations:</h1>
-<p>Here are some other small projects I've done, even if I'm not able to
-find an repo anymore.(So sad lost them)</p>
-<h3 id="nanogpt">nanoGPT</h3>
+<p>Here are some other small projects I've done, even some of them I'm
+not able to find a repo anymore. (So sad lost them)</p>
+<h3 id="poem-generator">Poem Generator</h3>
 <ul>
 <li>Github repo: <a
 target="_blank" rel="noopener" href="https://github.com/radicalyyyahaha/Poem_Generator">Poem
 Generator</a></li>
 </ul>
-<p>Modeled after nanoGPT, a decoder-only transformer model is
-constructed from zero, and then it is used for poetry training and
-generation after magic modification.</p>
-<h3 id="qq-chatbot">QQ chatbot</h3>
-<h3 id="stable-diffusion-so-vits-svc">Stable Diffusion &amp;
-So-Vits-SVC</h3>
-<h3 id="reinforcement-learning">Reinforcement Learning</h3>
+<img src="/2024/10/21/Project/6.jpg" srcset="/img/loading.gif" lazyload class="">
+<p>Modeled following nanoGPT, a decoder-only transformer model is
+constructed from scratch, and then it is used for poetry training and
+generation after a huge modification.</p>
 <h3
 id="protein-morphology-prediction-method-based-on-deep-learning">Protein
 morphology prediction method based on Deep Learning</h3>
+<p>In this research, I mainly focus on and learn how to use deep
+learning models for protein sequence and structure prediction,
+especially application language models and Transformer architecture.
+I've been looking at Ali Madani's ProGen model, which is based on a
+variant of Transformer for accurate prediction of protein sequences,
+providing fine control in terms of primary sequence similarity,
+secondary structure accuracy, and conformational energy.</p>
+<p>In addition, I explored the esm-2 model from the Facebook AI team and
+learned that the model simplifies the architecture by paying attention
+to MSA rows and columns, which not only enables end-to-end protein
+spatial structure prediction, but also has fast training and reasoning
+speed.</p>
+<p>The project only went through a month of research, after which no
+progress was made.</p>
+<h3 id="qq-chatbot">QQ chatbot</h3>
+<ul>
+<li>The official website of the architecture platform: <a
+target="_blank" rel="noopener" href="https://nonebot.dev/">NONEBOT</a> <img src="/2024/10/21/Project/5.jpg" srcset="/img/loading.gif" lazyload class=""></li>
+</ul>
+<p>Out of interest, I rented a 4C8G server in Tencent Cloud for half a
+year for the development of QQ robots. The architecture used is NoneBot,
+which is a Python asynchronous QQ robot framework, it will parse and
+process the message received by the QQ robot, and distribute it to the
+corresponding command processor and natural language processor in the
+form of plug-ins to complete specific functions. NoneBot uses the
+aiocqhttp (opens new window) library for its underlying interaction,
+which is a Python asynchronous SDK for OneBot (opens new window)
+(formerly CQHTTP) that uses asynchronous I/O, Encapsulates Web server
+related code and supports OneBot's HTTP, HTTP POST, and reverse
+WebSocket communication methods. NoneBot cannot run without the OneBot
+implementation, taking go-cqhttp as an example, which communicates
+directly with the QQ server for the actual receiving and sending of
+messages, notifications, and requests. When go-cqhttp receives the
+message, it wraps the message as an event (the same as a notification
+and request) and sends the event to the NoneBot according to the
+universal address in ws-reverse in its configuration.</p>
+<p>Less than two months after developing the functions of the QQ bot, a
+large number of plug-ins come from the plug-in market, and what I do is
+more the task of integrating plug-ins(thanks to the plugin authors for
+their selfless contributions). Sadly, Tencent officials began to ban the
+QQ bot on a large scale, and with the server that I rented for a few
+days, and then I shut down the server.</p>
+<h3 id="stable-diffusion-so-vits-svc">Stable Diffusion &amp;
+So-vits-SVC</h3>
+<ul>
+<li>Trained ckpt stored in huggingface:<a
+target="_blank" rel="noopener" href="https://huggingface.co/Misukumika/so-vit-svc/tree/main/so-vits%20models">so-vits
+models</a></li>
+</ul>
+<p>Make easy AI cover videos with stable diffusion and So-vits-SVC, see
+my bilibili channel for details: <a
+target="_blank" rel="noopener" href="https://space.bilibili.com/364701513">bilibili</a></p>
 
                 
               </div>
