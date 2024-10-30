@@ -16,16 +16,16 @@
   <meta name="author" content="Zhili Yang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Overview This post From Quantity to Quality: Boosting LLM Performance with Self-Guided Data Selection for Instruction Tuning One sentence summary: Let the model choose the data for itself ##### Design">
+    <meta name="description" content="Overview This post From Quantity to Quality: Boosting LLM Performance with Self-Guided Data Selection for Instruction Tuning One sentence summary: Let the model choose the data for itself Design exper">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Implementation">
 <meta property="og:url" content="http://example.com/2024/10/21/Implementation/index.html">
 <meta property="og:site_name" content="Zhili Yang&#39;s Blog">
-<meta property="og:description" content="Overview This post From Quantity to Quality: Boosting LLM Performance with Self-Guided Data Selection for Instruction Tuning One sentence summary: Let the model choose the data for itself ##### Design">
+<meta property="og:description" content="Overview This post From Quantity to Quality: Boosting LLM Performance with Self-Guided Data Selection for Instruction Tuning One sentence summary: Let the model choose the data for itself Design exper">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/img/impl.png">
 <meta property="article:published_time" content="2024-10-21T12:03:13.000Z">
-<meta property="article:modified_time" content="2024-10-22T08:21:58.803Z">
+<meta property="article:modified_time" content="2024-10-30T11:51:31.160Z">
 <meta property="article:author" content="Zhili Yang">
 <meta property="article:tag" content="PAPER">
 <meta name="twitter:card" content="summary_large_image">
@@ -255,7 +255,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.7k words
+          2.4k words
         
       </span>
     
@@ -266,7 +266,7 @@
         
         
         
-          15 mins
+          20 mins
         
       </span>
     
@@ -322,12 +322,16 @@
 id="from-quantity-to-quality-boosting-llm-performance-with-self-guided-data-selection-for-instruction-tuning">From
 Quantity to Quality: Boosting LLM Performance with Self-Guided Data
 Selection for Instruction Tuning</h3>
-<p>One sentence summary: Let the model choose the data for itself #####
-Design experiment 1. Use k-means to filter out 1k instructions to
-fine-tune the data for training and train only one epoch 2. This
-cherry-model is then used to filter the data in reverse, using the IFD
-metric 3. <span class="math display">\[IFD_\theta(Q,
-A)=\frac{s_\theta(A|Q)}{s_\theta(A)}\]</span></p>
+<p>One sentence summary: Let the model choose the data for itself</p>
+<h5 id="design-experiment">Design experiment</h5>
+<ol type="1">
+<li>Use k-means to filter out 1k instructions to fine-tune the data for
+training and train only one epoch</li>
+<li>This cherry-model is then used to filter the data in reverse, using
+the IFD metric</li>
+<li><span class="math display">\[IFD_\theta(Q,
+A)=\frac{s_\theta(A|Q)}{s_\theta(A)}\]</span></li>
+</ol>
 <img src="/2024/10/21/Implementation/1.png" srcset="/img/loading.gif" lazyload class="">
 <ol start="4" type="1">
 <li>This formula selects data with IFD less than 1 and a high ratio,
@@ -414,7 +418,7 @@ for a given instruction, GPT-2 model and others directly used to
 calculate the IFD score of each sample. Then the top k-percent samples
 with the highest IFD scores under 1 are selected for faster instruction
 tuning.</p>
-<h5 id="design-experiment">Design experiment</h5>
+<h5 id="design-experiment-1">Design experiment</h5>
 <ol type="1">
 <li>Dataset: Alpaca Dataset; Models: GPT-2, GPT-2-Large, GPT-2-XL,
 GPT-NEO(1.3B), LlaMA3-8B</li>
@@ -454,6 +458,232 @@ results of the paper</p>
 <h3
 id="less-selecting-influential-data-for-targeted-instruction-tuning">LESS:
 Selecting Influential Data for Targeted Instruction Tuning</h3>
+<p>One sentence summary: Perform a small amount of tuning on the
+training set as warmup, then calculate the influence among all the
+training data on the verification set, and finally select the data with
+the largest impact factor for model training.</p>
+<p>Evaluation: The computational overhead is a little too high.</p>
+<h5 id="design-experiment-2">Design experiment</h5>
+<img src="/2024/10/21/Implementation/9.png" srcset="/img/loading.gif" lazyload class="">
+<p>Step 1: Warmup training with LoRA Efficient fine-tuning of N epoches
+of FM on a random subset of a training set using LoRA yields low-rank
+parameters while saving model parameters (ckpt) after each epoch.</p>
+<p>Step 2: Projecting the gradients For each training data, calculate
+its gradient in step 1, use RP (random projection) to generate
+low-dimensional gradient features, and store these features in the
+gradient datastore.</p>
+<p>Step 3: Data Selection Algorithm For the val set of the target task,
+for each subtask D, use the parameters <span
+class="math display">\[\theta_1, \theta_2,..., \theta_N \]</span>to
+calculate the average gradient feature <img src="/2024/10/21/Implementation/7.png" srcset="/img/loading.gif" lazyload class=""></p>
+<p>Then the data is selected according to the similarity between the
+gradient features of the data points and the verification set
+<img src="/2024/10/21/Implementation/8.png" srcset="/img/loading.gif" lazyload class=""></p>
+<h5 id="reproduce-process-1">Reproduce process</h5>
+<p>Step 1: warm up training <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs script">DATA_DIR=./data \<br>MODEL_PATH=../hub/shakechen/Llama-2-7b-hf \<br>PERCENTAGE=0.01 \<br>DATA_SEED=3 \<br>JOB_NAME=llama2-7b-p$&#123;PERCENTAGE&#125;-lora-seed$&#123;DATA_SEED&#125; \<br><br>./less/scripts/train/warmup_lora_train.sh &quot;$DATA_DIR&quot; &quot;$MODEL_PATH&quot; &quot;$PERCENTAGE&quot; &quot;$DATA_SEED&quot; &quot;$JOB_NAME&quot;<br></code></pre></td></tr></table></figure></p>
+<p>After running Step2, the optimizer.bin file is missing and only
+optimizer.pt is found in the ckpt folder, check out the issues:
+<img src="/2024/10/21/Implementation/10.png" srcset="/img/loading.gif" lazyload class=""></p>
+<p>then run again. Cost: 3:13h on 3 A40-48G</p>
+<p>Step 2: Building the gradient datastore <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs script">CKPT=12<br><br>TRAINING_DATA_NAME=dolly<br>TRAINING_DATA_FILE=./data/dolly_data.jsonl # when changing data name, change the data path accordingly<br>GRADIENT_TYPE=&quot;adam&quot;<br>MODEL_PATH=../out/llama2-7b-p0.01-lora-seed3/checkpoint-$&#123;CKPT&#125;<br>OUTPUT_PATH=../grads/llama2-7b-p0.01-lora-seed3/$&#123;TRAINING_DATA_NAME&#125;-ckpt$&#123;CKPT&#125;-$&#123;GRADIENT_TYPE&#125;<br>DIMS=&quot;8192&quot;<br><br>./less/scripts/get_info/grad/get_train_lora_grads.sh &quot;$TRAINING_DATA_FILE&quot; &quot;$MODEL_PATH&quot; &quot;$OUTPUT_PATH&quot; &quot;$DIMS&quot; &quot;$GRADIENT_TYPE&quot;<br></code></pre></td></tr></table></figure> Cost:
+43:56min</p>
+<p>Step 3: Selecting data for a task <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs script">CKPT=12<br>TASK=mmlu<br>MODEL_PATH=../out/llama2-7b-p0.01-lora-seed3/checkpoint-$&#123;CKPT&#125;<br>OUTPUT_PATH=../grads/llama2-7b-p0.01-lora-seed3/$&#123;TASK&#125;-ckpt$&#123;CKPT&#125;-sgd # for validation data, we always use sgd<br>DATA_DIR=../data<br>DIMS=&quot;4096 8192&quot; # We use 8192 as our default projection dimension <br><br>./less/scripts/get_info/grad/get_eval_lora_grads.sh &quot;$TASK&quot; &quot;$DATA_DIR&quot; &quot;$MODEL_PATH&quot; $OUTPUT_PATH &quot;$DIMS&quot;<br></code></pre></td></tr></table></figure></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs script">DIM=8192 # decide which dimension to use<br>GRADIENT_PATH=../grads/llama2-7b-p0.01-lora-seed3/dolly-ckpt12-adam/dim$&#123;DIM&#125;<br>TRAIN_FILE_NAMES=&quot;dolly&quot;<br>CKPTS=&quot;12&quot; # checkpoing index<br>CHECKPOINT_WEIGHTS=&quot;1.6877e-05&quot; # average lr of the epoch<br><br>VALIDATION_GRADIENT_PATH=../grads/llama2-7b-p0.01-lora-seed3/mmlu-ckpt12-sgd/dim$&#123;DIM&#125;<br>TARGET_TASK_NAMES=&quot;mmlu&quot;<br>SELECTED_DATA_OUTPUT_PATH=&quot;../selected_data&quot;<br><br>./less/scripts/data_selection/matching.sh &quot;$GRADIENT_PATH&quot; &quot;$TRAIN_FILE_NAMES&quot; &quot;$CKPTS&quot; &quot;$CHECKPOINT_WEIGHTS&quot; &quot;$VALIDATION_GRADIENT_PATH&quot; &quot;$TARGET_TASK_NAMES&quot; &quot;$SELECTED_DATA_OUTPUT_PATH&quot;<br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs script">python3 -m less.data_selection.write_selected_data \<br>--target_task_names $&#123;TARGET_TASK_NAMES&#125; \<br>--train_file_names $&#123;TRAIN_FILE_NAMES&#125; \<br>--train_files ../data/train/processed/dolly/dolly_data.jsonl \<br>--output_path $SELECTED_DATA_OUTPUT_PATH \<br>--percentage 0.01<br></code></pre></td></tr></table></figure>
+<p>dataset: dolly, choose top 10 data:</p>
+<table>
+<thead>
+<tr class="header">
+<th>rank</th>
+<th>file name</th>
+<th>index</th>
+<th>score</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>dolly</td>
+<td>11921</td>
+<td>0.073349</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>dolly</td>
+<td>10117</td>
+<td>0.072425</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>dolly</td>
+<td>7017</td>
+<td>0.071267</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>dolly</td>
+<td>14825</td>
+<td>0.07023</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>dolly</td>
+<td>4947</td>
+<td>0.068469</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>dolly</td>
+<td>13839</td>
+<td>0.067585</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>dolly</td>
+<td>2031</td>
+<td>0.067453</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>dolly</td>
+<td>13638</td>
+<td>0.067247</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>dolly</td>
+<td>7766</td>
+<td>0.067236</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>dolly</td>
+<td>11697</td>
+<td>0.067214</td>
+</tr>
+</tbody>
+</table>
+<h3 id="deita-data-efficient-instruction-tuning-for-alignment">Deita:
+Data-Efficient Instruction Tuning for Alignment</h3>
+<p>One sentence summary: The data were screened by scoring from three
+dimensions: complexity, quality and diversity</p>
+<h5 id="abstractconclusion">abstract&amp;conclusion</h5>
+<img src="/2024/10/21/Implementation/11.png" srcset="/img/loading.gif" lazyload class="">
+<img src="/2024/10/21/Implementation/12.png" srcset="/img/loading.gif" lazyload class="">
+<h5 id="design-experiment-3">Design experiment</h5>
+<p>Two kinds of data were collected, one was SOTA model data, with 300K
+pieces, and the other was some ordinary base data, with 100K pieces.</p>
+<ol type="1">
+<li><p>Evol Complexity Given a small seed dataset <span
+class="math display">\[D={(I_1^{(0)},R_1^{(0)}),... , (I_N ^ {} (0), R_N
+^ {(0)})} \]</span>, for each command <span class="math display">\[I_k
+\]</span>^ 0, increase the complexity of the instruction (increase
+conditions, deepen instructions, specific instructions, improve
+reasoning step). After M iterations, instructions of different
+complexity can be obtained, <span class="math display">\[I_k^{(0)},...
+,I_k^{(M)}\]</span>, and then use ChatGPT to sort and score these M
+instructions.</p></li>
+<li><p>Evol Quality The approach is basically the same, except that the
+generated responses are used to let ChatGPT score the instruction
+data.</p></li>
+<li><p>Diversity Firstly, the data in the data pool is sorted in
+descending order according to the comprehensive score of complexity and
+quality (complexity score * quality score), and then sample data <span
+class="math display">\[x_i\]</span>is extracted one by one in order to
+calculate the distance value between <span
+class="math display">\[x_i\]</span>and the nearest sample in the
+screening pool. In this way, the data is represented by vector using the
+Llama1-13B model. The distance is calculated using cosine similarity. If
+the distance value is less than τ, it is considered that the sample is
+not highly similar to the data in the screening pool and can be included
+in the screening pool. Otherwise, it is not included in the screening
+pool. When the number of samples in the screening pool reaches the
+specified number of samples, the diversity screening is completed.
+<img src="/2024/10/21/Implementation/13.png" srcset="/img/loading.gif" lazyload class=""></p></li>
+</ol>
+<p>Repetition reference site:
+https://distilabel.argilla.io/1.0.2/sections/papers/deita/</p>
+<h3 id="mods-model-oriented-data-selection-for-instruction-tuning">MoDS:
+Model-oriented Data Selection for Instruction Tuning</h3>
+<p>One sentence summary: A data filtering method based on the model's
+own perception of instruction data</p>
+<p>evaluate: It's a little too cumbersome, and the LLM needs to be
+fine-tuned to be evaluated and is already a waste of time.</p>
+<h5 id="design-experiment-4">Design experiment</h5>
+<img src="/2024/10/21/Implementation/14.png" srcset="/img/loading.gif" lazyload class="">
+<p>Step1: Utilize the reward-model-debertav3-large-v2 model which is
+developed by OpenAssistant to score the triplet(Instruction, input,
+output), obtains a score, when the score exceeds α, the data quality is
+considered to meet the standard, and a high-quality dataset is
+constructed.</p>
+<p>Step2: The K-Center-Greedy algorithm is used to achieve diversity
+screening <img src="/2024/10/21/Implementation/15.png" srcset="/img/loading.gif" lazyload class=""></p>
+<p>Step3: The data set selected in the second step is used for initial
+fine-tuning of the model. After obtaining the following ability of basic
+instructions, the high-quality data set of the first step is used for
+reasoning, and the result is scored by the reward model. When the score
+is less than β, it indicates that the initial model cannot generate
+high-quality responses to these instructions and does not have the
+ability to process these types of instructions, so as to obtain the
+necessary data set. Then, the necessity Data set row diversity is
+filtered to obtain Augmented Instruction Data.</p>
+<p>Step4: Merge these two datasets(Augmented datasets and seed
+datasets), and then finetune the raw pre-trained LLM.</p>
+<h5 id="reproduce-process-2">Reproduce process</h5>
+<p>Step1: Use reward models to filter high-quality data <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs script">python  ./quality-evaluation/quality-evaluation.py ./alpaca_data.json ./quality-evaluation.json<br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs script">python ./quality-evaluation/high-quality-data-extraction.py ./quality-evaluation.json ./high-quality-data.json 0.0<br></code></pre></td></tr></table></figure></p>
+<p>The author made a small error that if run directly will report
+TypeError: '&gt;' not supported between instances of 'float' and 'str',
+line 103 of high-quality-data-extraction.py needs to be modified as
+follows: <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">if</span> <span class="hljs-built_in">float</span>(item[<span class="hljs-string">&#x27;reward_score&#x27;</span>]) &gt; <span class="hljs-built_in">float</span>(threshold):<br></code></pre></td></tr></table></figure></p>
+<p>Step2: Filter diversity data top_k = 500 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs script">python ./diverse-data-selection/run.py ./high-quality-data.json ./seed-instructions.json top_k<br></code></pre></td></tr></table></figure></p>
+<p>Step3: Obtain enhanced data sets Remember to change the number of
+Gpus before you start --nproc_per_node=GPU_numbers It took 6:31min on
+the two A6000s <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs script">bash ./train/run.sh<br></code></pre></td></tr></table></figure></p>
+<p>Inference: <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs script">bash ./inference/instruction_filter.sh<br></code></pre></td></tr></table></figure></p>
+<p>Necessity evaluation: <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs script">python  ./necessity-evaluation/necessity-evaluation.py ./result.json ./inference-necessity-evaluation.json <br>python ./necessity-evaluation/necessity-instruction-extraction.py ./inference-necessity-evaluation.json ./<br>necessity-instruction.json 0<br></code></pre></td></tr></table></figure></p>
+<p>all number of instructions 100</p>
+<p>The percent of each score: (4, 5) : 1 0.01 (-5, -4) : 3 0.03 (5, 6) :
+8 0.08 (-2, -1) : 16 0.16 (-3, -2) : 6 0.06 (2, 3) : 10 0.1 (7, 8) : 9
+0.09 (6, 7) : 3 0.03 (-1, 0) : 9 0.09 (1, 2) : 10 0.1 (-7, -6) : 1 0.01
+(0, 1) : 13 0.13 (8, 9) : 2 0.02 (3, 4) : 5 0.05 (-6, -5) : 2 0.02 (-4,
+-3) : 2 0.02 num of bad case : 39</p>
+<p>Merge data: <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs script">python ./necessity-evaluation/merge.py ./seed-instructions.json ./necessity-instruction.json  ./final-selected-dataset.json<br></code></pre></td></tr></table></figure> number of file 1 500</p>
+<p>number of file 2 39</p>
+<p>number of data 539</p>
+<p>Step 4:Train LLM Fine-tuning the raw LLM with the merged dataset
+again: <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs script">bash ./train/run.sh<br></code></pre></td></tr></table></figure></p>
+<h3
+id="self-evolved-diverse-data-sampling-for-efficient-instruction-tuning">Self-Evolved
+Diverse Data Sampling for Efficient Instruction Tuning</h3>
+<p>One sentence summary: Use a self-iterative approach to get the most
+differentiated training data</p>
+<p>Evaluation: Is K-Center-Sampling too computation-intensive for large
+training sets? And the evaluation structure also relies on GPT-4
+judge.</p>
+<h5 id="design-experiment-5">Design experiment</h5>
+<img src="/2024/10/21/Implementation/16.png" srcset="/img/loading.gif" lazyload class="">
+<p>There is the initial training pool <span
+class="math inline">\(P_0\)</span>, and the training pool to be selected
+is <span class="math inline">\(Q_0\)</span></p>
+<ol type="1">
+<li><p>In <span class="math inline">\(P_0\)</span> training model <span
+class="math inline">\(M_0\)</span>, then embedding <span
+class="math inline">\(Q_0\)</span> and <span
+class="math inline">\(P_0\)</span></p></li>
+<li><p>K-center-sampling algorithm is used to calculate the K points
+farthest from <span class="math inline">\(P_0\)</span> in <span
+class="math inline">\(Q_0\)</span> and select them as <span
+class="math inline">\(S_0\)</span> and add them into <span
+class="math inline">\(P_0\)</span> for the next round of training
+data</p></li>
+<li><p>Iterate</p></li>
+</ol>
+<h5 id="reproduce-process-3">Reproduce process</h5>
+<p>First use the debug file to see if it works: <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs script">CUDA_VISIBLE_DEVICES=0,1 nohup python -m torch.distributed.run --nproc_per_node=2 train.py --config_file configs/config_debug.yml --wandb_key 96a8969282485b1be0c7897993485cc613bf59aa &gt; train_log.out 2&gt;&amp;1 &amp;<br></code></pre></td></tr></table></figure></p>
+<p>Once clear, start sifting through the data: <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs script">CUDA_VISIBLE_DEVICES=0,1 nohup python -m torch.distributed.run --nproc_per_node=2 train.py --config_file configs/config_example_kc_dolly.yml --wandb_key 96a8969282485b1be0c7897993485cc613bf59aa &gt; train_log.out 2&gt;&amp;1 &amp;<br></code></pre></td></tr></table></figure></p>
+<p>For some reason, the author seems to use full fine-tuning, I have no
+enough resources so can not finetuning...</p>
 
                 
               </div>
