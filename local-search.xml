@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>task2</title>
+    <link href="/2025/04/10/task2/"/>
+    <url>/2025/04/10/task2/</url>
+    
+    <content type="html"><![CDATA[<p><strong>Survival Analysis Report on Telco Customer Churn</strong></p><p><strong>Overview</strong> This report outlines the process andinsights gained from performing <strong>survival analysis</strong> onthe Telco Customer Churn dataset. The goal of this analysis is tounderstand <strong>customer retention</strong> and <strong>churnbehavior over time</strong>, specifically identifying how long customerstend to stay with the company and what factors influence theirdeparture.</p><p><strong>1. Objective</strong></p><p>• Estimate the <strong>survival probability</strong> of customersover time.</p><p>• Identify <strong>factors influencing churn</strong>, such ascontract type, tenure, payment method, and service usage.</p><p>• Visualize survival curves for different segments of customers(e.g., by internet service type or gender).</p><p>• Provide actionable insights for improving retention.</p><p><strong>2. Dataset Description</strong> We use the <strong>silverlayer</strong> of the Telco Customer Churn dataset, which containsmonthly customers with internet service. This layer was created from rawdata through a PySpark ETL pipeline.</p><p><strong>Key Columns for Analysis:</strong></p><p>• tenure — Duration (in months) the customer has stayed.</p><p>• churn — Binary indicator of churn (1 if churned, 0 otherwise).</p><p>• contract, internetService, paymentMethod, etc. — Categoricalfeatures for subgroup analysis.</p><p><strong>3. Methodology</strong></p><p><strong>3.1 Data Preparation</strong></p><p>• The data was loaded from a Delta Lake “silver” table.</p><p>• Records with missing or invalid values were filtered.</p><p>• The churn column was used as the <strong>eventindicator</strong>.</p><p>• The tenure column was used as the <strong>duration untilchurn</strong>.</p><p><strong>3.2 Survival Analysis Tools</strong></p><p>• <strong>Kaplan-Meier Estimator</strong>: Used to calculate andvisualize survival probabilities over time.</p><p>• <strong>Log-Rank Test</strong>: Used to compare survival curvesbetween groups.</p><p>• Optional: <strong>Cox Proportional Hazards Model</strong> formultivariate analysis (not covered here but can be added).</p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Implementation</title>
     <link href="/2024/10/21/Implementation/"/>
     <url>/2024/10/21/Implementation/</url>
